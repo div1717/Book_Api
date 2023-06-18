@@ -1,6 +1,8 @@
 const express=require('express');
 const db=require("./database/db");
 const app=express();
+const dotenv = require('dotenv');
+dotenv.config();
 const port='8081';
 const bookRouter=require("./routes/books.router");
 const authRouter=require("./routes/author.router");
