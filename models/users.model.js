@@ -5,27 +5,18 @@ const userSchema = mongoose.Schema({
     userName: {
         type: 'string',
         trim: true,
-        required: [true, 'Please provide a name'],
-        maxlength: 32
+        required: [true, 'Please provide a name']
     },
     email: {
         type: 'string',
         trim: true,
         required: [true, 'Please provide an e-mail'],
-        unique: true,
-        match: [
-            /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/,
-            'Please provide a valid e-mail'
-        ]
+        unique: true
     },
     password: {
         type: 'string',
         trim: true,
         required: [true, 'Please provide a password'],
-        match: [
-            /^(?=.*[0-9])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{6,16}$/,
-            'It must contain at least one digit (0-9), It must contain at least one special character from the set (!, @, #, $, %, ^, &, *), It must consist of characters from the set of uppercase letters (A-Z), lowercase letters (a-z), digits (0-9), and the specified special characters, It must be between 6 and 16 characters in length (inclusive)'
-        ]
     },
     role: {
         type: Number,
@@ -35,17 +26,17 @@ const userSchema = mongoose.Schema({
     timestamp: true
 })
 
-userSchema.pre('save', async function (next) {
-    if (!this.isModified('password')) {
-        return next();
-    }
-    try {
-        this.password = await bcrypt.hash(this.password, 10);
-        return next();
-    } catch (error) {
-        return next(error);
-    }
-});
+// userSchema.pre('save', async function (next) {
+//     if (!this.isModified('password')) {
+//         return next();
+//     }
+//     try {
+//         this.password = await bcrypt.hash(this.password, 10);
+//         return next();
+//     } catch (error) {
+//         return next(error);
+//     }
+// });
 
 const userModel = mongoose.model("User", userSchema);
 module.exports = userModel;
