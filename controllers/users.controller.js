@@ -1,7 +1,7 @@
 const User = require('../models/users.model');
 
 const signup = async(req, res) => {
-    const {email} = req.body;
+    const {userName, email, password} = req.body;
     const existingUser = await User.findOne({email});
 
     if(existingUser){
@@ -12,7 +12,7 @@ const signup = async(req, res) => {
     }
 
     try {
-        const user = await User.create(req.body);
+        const user = await User.create({userName, email, password});
         res.status(201).json({
             success: true,
             user
