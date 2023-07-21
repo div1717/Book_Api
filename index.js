@@ -10,11 +10,13 @@ const bookRouter=require("./routes/books.router");
 const authRouter=require("./routes/author.router");
 const pubRouter=require("./routes/publication.router");
 
+const { authenticateToken } = require("./controllers/users.controller"); 
+
 app.use(express.json());
 app.use("/users", userRouter);
-app.use("/books",bookRouter);
-app.use("/authors",authRouter);
-app.use("/publications",pubRouter);
+app.use("/books", authenticateToken, bookRouter);
+app.use("/authors", authenticateToken, authRouter);
+app.use("/publications", authenticateToken, pubRouter);
 
 app.listen(port,()=>{
     console.log("Listening");

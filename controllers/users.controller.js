@@ -5,6 +5,7 @@ const{
 }=require("../helpers/validation.helpers");
 
 const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
 
 const signup = async(req, res) => {
     const {userName, email, password} = req.body;
@@ -70,17 +71,24 @@ const signin = async(req, res) =>{
 
     try {
         const isMatched = await bcrypt.compare(req.body.password, existingUser.password);
-        if(isMatched){
-            return res.status(200).json({
-                success: true,
-                message: "You are successfully logged in!"
-            })
-        } else{
+        if(!isMatched){
             return res.status(400).json({
                 success: false,
                 message: "Invalid credentials!"
             })
         }
+        
+        const user = {
+            name : req.body.userName
+        }
+        
+        const accessToken = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET);
+
+        return res.status(200).json({
+            success: true,
+            message: "You are successfully logged in!",
+            accessToken
+        })
     } catch (error) {
         return res.status(500).json({
             success: false,
@@ -90,7 +98,30 @@ const signin = async(req, res) =>{
 
 }
 
+function authenticateToken(req, res, next) {
+    const authHeader = req.headers['authorization'];
+    const token = authHeader && authHeader.split(' ')[1];
+
+    if(token == null)
+        return res.status(401).json({
+            success: false,
+            message: "token is null"
+        })
+
+    jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, user) => {
+        if(err) return res.status(403).json({
+            success : false,
+            message : "token is not valied so you dont have access"
+        })
+
+        req.user = user;
+        next();
+    })
+
+}
+
 module.exports ={
     signin,
-    signup
+    signup,
+    authenticateToken
 };
