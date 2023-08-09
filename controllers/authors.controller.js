@@ -15,7 +15,7 @@ const getAllAuthors=async (req,res)=>{
     }
     catch(error)
     {
-        res.send("error");
+        res.status(404).json({message: "Author Not found or the connection failed", error: error});
     }
 };
 
@@ -29,7 +29,7 @@ const getAuthorById=async (req,res)=>{
     }
     catch(error)
     {
-        res.send("error");
+        res.status(404).json({message: "Author Not found or the connection failed", error: error});
     }
 };
 
@@ -54,12 +54,12 @@ const postAuthor=async (req,res)=>{
     {
         try
         {
-        await model.create(author);
-        res.send("Success");
+        const mongoResponse = await model.create(author);
+        res.json({message : "Success!", res : mongoResponse});
         }
         catch(error)
         {
-            res.send("error");
+            res.status(500).json({message: "Unable to post the author", error: error});
         }
     }
     else
@@ -75,18 +75,18 @@ const putAuthorUpdate=async (req,res)=>{
         const Author=await model.find({id : req.params.id});
         if(Author.length==0)
         {
-            res.send("Author Not Found");
+            res.status(404).json({message: "Author Not found or the connection failed", error: error});
         }
         else
         {
-            await model.updateMany({id : req.params.id},changes);
-            res.send("updated");
+            const mongoResponse = await model.updateOne({id : req.params.id},changes);
+            res.json({message : "Success!", res : mongoResponse});
         }
         
     }
     catch(error)
     {
-        res.send("Error");
+        res.status(500).json({message: "Unable to update the author", error: error});
     }
 };
 
@@ -95,18 +95,18 @@ const deleteAuthorById=async (req,res)=>{
         const author=await model.find({id : req.params.id});
         if(author.length==0)
         {
-            res.send("Author Not Found");
+            res.status(404).json({message: "Author Not found or the connection failed", error: error});
         }
         else
         {
-            await model.deleteOne({id: req.params.id});
-            res.send("success");
+            const mongoResponse = await model.deleteOne({id: req.params.id});
+            res.json({message : "Success!", res : mongoResponse});
         }
         
     }
     catch(error)
     {
-        res.send("error");
+        res.status(500).json({message: "Unable to delete the author", error: error});
     }   
 };
 module.exports={

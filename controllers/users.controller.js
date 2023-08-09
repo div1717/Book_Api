@@ -19,7 +19,7 @@ const signup = async(req, res) => {
     }
 
     try {
-        console.log(password);
+        // console.log(password);
 
         if(!validemail(email)){
             return res.status(400).json({
@@ -38,7 +38,7 @@ const signup = async(req, res) => {
         }
 
         const hashedPassword = await bcrypt.hash(password, 10);
-        console.log(hashedPassword);
+        // console.log(hashedPassword);
 
         const user = await User.create({
             userName,
@@ -50,7 +50,7 @@ const signup = async(req, res) => {
             user,
           });
     } catch (error) {
-        console.log(error);
+        // console.log(error);
         res.status(400).json({
             success: false,
             message: error.message

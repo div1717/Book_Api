@@ -34,14 +34,6 @@ const getBookById=async (req,res)=>{
 
 const getBooksByCategory=async (req,res)=>{
     try{
-        /*
-        const books=await model.find({
-            category: {
-                "$in" : [req.params.cat]
-            }
-        },'-_id -__v');
-        */
-
         const books=await model.find({
             category: req.params.cat
         },'-_id -__v');
